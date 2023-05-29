@@ -1,25 +1,51 @@
-import logo from "./resources/images/logo.svg";
-import "./resources/css/App.css";
+
+import React, { useState, useEffect } from "react";
+import LocationModule from "./module/LocationModule.js";
 
 function App() {
+
+  const [locations, setLocations] = useState([]);
+  const [currentLocation, setCurrentLocation] = useState([]);
+
+  async function getAllLocations() {
+    try {
+      const response = await fetch("http://localhost:3001/locations");
+      const data = await response.json();
+
+      setLocations(Array.from(data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  async function deleteLocation(locForDelete) {
+    
+    try {
+      const response = await fetch(
+        `http://localhost:3001/location/${locForDelete.id}`, 
+        { method: "DELETE" });
+
+      const data = await response.text();
+      if (data == "Success.") {
+        // TODO: message
+        console.log(data);
+      }
+      
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
+  useEffect(() => {
+    getAllLocations();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <LocationModule id="location-module" locations = { locations } />
     </div>
   );
-}
+};
 
 export default App;
