@@ -3,7 +3,9 @@ import React, { useState, useEffect } from "react";
 
 import Button from "@mui/material/Button"
 import ButtonGroup from "@mui/material/ButtonGroup"
-import TextField from "@mui/material/TextField"
+import Paper from "@mui/material/Paper"
+import InputBase from "@mui/material/InputBase"
+import InputLabel from "@mui/material/InputLabel"
 
 function FormComponent({ 
   frmLabel, 
@@ -13,26 +15,51 @@ function FormComponent({
   api, 
   id }) {
 
-  // console.log(valuesAll);
+  const [inputValue, setInputValue] = useState([]);
+
+  useEffect(() => {
+    setInputValue(valueTxt);
+  });
+
+  function add() {
+    api.add(valueFocused);
+  }
+
+  function edit() {
+    api.edit(valueFocused);
+  }
+
+  function deleteValue() {
+    api.delete(valueFocused);
+  }  
 
   return (
-    <form id={ id }>
-      <TextField 
+    <Paper id={ id } component="form" 
+      sx={{ 
+        p: "2px 4px", 
+        display: "flex", 
+        position: "relative", 
+        alignItems: "center", 
+        bgcolor: "#509ce7", 
+        width: 750 }}>
+      <InputLabel id="frm-lbl" htmlFor="frm-text">
+        { frmLabel }
+      </InputLabel>
+      <InputBase 
         id="frm-text" 
         label={ frmLabel } 
-        value={ valueTxt } 
+        value={ inputValue } 
         variant="outlined" 
-        fullWidth 
-        margin="normal" 
-        size="small" 
-        InputProps={{ readOnly: true }} 
-      /> 
+        sx={{ ml: 1, flex: 1, position: "relative" }} 
+        onFocus={() => { setInputValue({ value: valueFocused.name }) }} 
+        onBlur={() => { setInputValue({ value: valueTxt }) }}
+      />
       <ButtonGroup id="frm-btngrp" disableElevation variant="contained">
-        <Button id="frm-btn-add" onClick={() =>{ api.add(valueFocused) }} >Add</Button>
-        <Button id="frm-btn-edit" onClick={() =>{ api.edit(valueFocused) }} >Edit</Button>
-        <Button id="frm-btn-delete" onClick={() =>{ api.delete(valueFocused) }} >Delete</Button>
+        <Button id="frm-btn-add" onClick={() =>{ add() }} >Add</Button>
+        <Button id="frm-btn-edit" onClick={() =>{ edit() }} >Edit</Button>
+        <Button id="frm-btn-delete" onClick={() =>{ deleteValue() }} >Delete</Button>
       </ButtonGroup> 
-    </form>
+    </Paper>
   );
 
 }
