@@ -1,11 +1,19 @@
 
 import React, { useState, useEffect } from "react";
 
+import LocationAPI from "./../apis/LocationAPI.js"
+
 import FormComponent from "./../components/FormComponent.js";
 
-function LocationModule({ locations, id }) {
+function LocationModule({ id }) {
 
-  function createTree() {
+  const locationAPI = new LocationAPI();
+  
+  const [locations, setLocations] = useState([]);
+  const [locationFocused, setLocationFocused] = useState([]);
+  const [locationValue, setLocationValue] = useState([]);
+
+  function createTree(locations) {
     let locationTree = [];
 
     if (locations) {
@@ -33,13 +41,28 @@ function LocationModule({ locations, id }) {
     return text;
   }
 
-  let locationTree = createTree();
-  let locationValue = "";
+  function loadModule(locations) {
+    let locationTree = createTree(locations);
 
-  if (locationTree.length != 0) {
-    locationValue = printNames(locationValue, locationTree[0]);
-    locationValue = locationValue.slice(0, -3);
-  }  
+    if (locationTree.length != 0) {
+      let text = "";
+      text = printNames(text, locationTree[0]);
+      text = text.slice(0, -3);
+      setLocationValue(text);
+
+      let locNames = text.split(" > ");
+      let locNameLast = locNames[locNames.length - 1];
+      let locValue = locations.find(location => location.name == locNameLast);
+      setLocationFocused(locValue);
+    }
+  }
+
+  useEffect(() => {
+    locationAPI.getAll((data) => {
+      setLocations(Array.from(data));
+      loadModule(data);
+    });
+  });
 
   return (
     <div id={ id }>
@@ -58,9 +81,10 @@ function LocationModule({ locations, id }) {
       <FormComponent 
         id="location-form" 
         frmLabel="Location" 
-        frmValue={ locationTree } 
-        frmValueTxt={ locationValue } 
-        callbackDelete={ console.log }
+        valuesAll={ locations } 
+        valueFocused={ locationFocused }
+        valueTxt={ locationValue } 
+        api={ locationAPI }
       />
     </div>
   );
