@@ -13,6 +13,13 @@ function LocationModule({ id }) {
   const [locationFocused, setLocationFocused] = useState([]);
   const [locationValue, setLocationValue] = useState([]);
 
+  useEffect(() => {
+    locationAPI.getAll((data) => {
+      setLocations(Array.from(data));
+      loadModule(data);
+    });
+  });
+
   function createTree(locations) {
     let locationTree = [];
 
@@ -56,13 +63,6 @@ function LocationModule({ id }) {
       setLocationFocused(locValue);
     }
   }
-
-  useEffect(() => {
-    locationAPI.getAll((data) => {
-      setLocations(Array.from(data));
-      loadModule(data);
-    });
-  });
 
   return (
     <div id={ id }>
