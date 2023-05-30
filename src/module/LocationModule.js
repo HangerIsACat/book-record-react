@@ -126,18 +126,6 @@ function LocationModule({ id }) {
 
   return (
     <div id={ id }>
-      <h3>Locations</h3>
-      <ul>
-        {
-          locations.map(location => 
-            <li 
-              id={ `location-${ location.id }` } 
-              key={ location.id } >
-                { location.name } : { location.parentID }
-            </li>
-          )
-        }
-      </ul>
       <FormComponent 
         id="location-form" 
         frmLabel="Location" 
