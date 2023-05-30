@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import LocationAPI from "./../apis/LocationAPI.js"
+import LocationAPI from "./../apis/LocationAPI.js";
 
 import FormComponent from "./../components/FormComponent.js";
 
@@ -83,6 +83,7 @@ function LocationModule({ id }) {
         frmLabel="Location" 
         valuesAll={ locations } 
         valueFocused={ locationFocused }
+        valueFocusedTxt={ locationFocused.name }
         valueTxt={ locationValue } 
         api={ locationAPI }
       />
