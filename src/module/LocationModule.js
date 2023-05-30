@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import LocationAPI from "./../apis/LocationAPI.js";
 
 import FormComponent from "./../components/FormComponent.js";
+import LocationDialogComponent from "../components/LocationDialogComponent.js"
 
 function LocationModule({ id }) {
 
@@ -12,9 +13,13 @@ function LocationModule({ id }) {
   const [locations, setLocations] = useState([]);
   const [locationFocused, setLocationFocused] = useState({});
   const [locationValue, setLocationValue] = useState("");
+
   const [inputText, setInputText] = useState("");
 
-  /*
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const [inputTextNameEdit, setInputTextNameEdit] = useState("");
+
+  //*
   useEffect(() => {
     locationAPI.getAll((data) => {
       setLocations(Array.from(data));
@@ -74,8 +79,13 @@ function LocationModule({ id }) {
   }
 
   function editLocation() {
-    console.log(`Edit text: ${locationFocused.name}`);
-    // locationAPI.edit(text);
+    const formData = new URLSearchParams();
+    formData.append("name", inputTextNameEdit);
+    formData.append("parentID", locationFocused.parentID);
+
+    locationAPI.edit(locationFocused, formData);
+
+    setIsOpenEdit(false);
   }
 
   function deleteLocation() {
@@ -83,25 +93,18 @@ function LocationModule({ id }) {
     console.log(locationValue);
   }
 
-  function focusInput(e) {
-    console.log("Focus");
-    // setInputText(locationFocused.name);
-    setInputText("Focus");
-    console.log(locationValue);
-    console.log(locationFocused);
+  function openEditDialog() {
+    setIsOpenEdit(true);
+    setInputTextNameEdit(locationFocused.name);
   }
 
-  function blurInput(e) {
-    console.log("Blur");
-    // setInputText(locationValue)
-    setInputText("Blur");
-    console.log(locationValue);
-    console.log(locationFocused);
+  function closeEditDialog() {
+    setIsOpenEdit(false);
   }
 
-  function changeInput(e) {
-    console.log("Change");
-    setInputText(e.target.value);
+  function changeTextEditDialog(e) {
+    console.log(e.target.value);
+    setInputTextNameEdit(e.target.value);
   }
 
   return (
@@ -123,12 +126,20 @@ function LocationModule({ id }) {
         frmLabel="Location" 
         valueTxt={ inputText } 
         handlerAdd={ addLocation } 
-        handlerEdit={ editLocation } 
+        handlerEdit={ openEditDialog } 
         handlerDelete={ deleteLocation } 
-        handlerBlur={ blurInput } 
-        handlerFocus={ focusInput } 
-        handlerChange={ changeInput }
       />
+
+      <LocationDialogComponent 
+        id="location-dialog" 
+        frmLabel="Edit Location" 
+        isOpen={ isOpenEdit } 
+        frmFieldLabel="Name" 
+        frmFieldValue={ inputTextNameEdit }
+        handlerOk={ editLocation }
+        handlerCancel={ closeEditDialog } 
+        handlerClose={ closeEditDialog }
+        handlerChange={ changeTextEditDialog } />
     </div>
   );
 
