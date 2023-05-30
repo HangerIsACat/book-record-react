@@ -10,15 +10,18 @@ function LocationModule({ id }) {
   const locationAPI = new LocationAPI();
   
   const [locations, setLocations] = useState([]);
-  const [locationFocused, setLocationFocused] = useState([]);
-  const [locationValue, setLocationValue] = useState([]);
+  const [locationFocused, setLocationFocused] = useState({});
+  const [locationValue, setLocationValue] = useState("");
+  const [inputText, setInputText] = useState("");
 
+  /*
   useEffect(() => {
     locationAPI.getAll((data) => {
       setLocations(Array.from(data));
       loadModule(data);
     });
   });
+  //*/
 
   function createTree(locations) {
     let locationTree = [];
@@ -56,6 +59,7 @@ function LocationModule({ id }) {
       text = printNames(text, locationTree[0]);
       text = text.slice(0, -3);
       setLocationValue(text);
+      setInputText(locationValue);
 
       let locNames = text.split(" > ");
       let locNameLast = locNames[locNames.length - 1];
@@ -64,9 +68,45 @@ function LocationModule({ id }) {
     }
   }
 
+  function addLocation() {
+    console.log(`Add text: ${locationFocused.name}`);
+    // locationAPI.add(text);
+  }
+
+  function editLocation() {
+    console.log(`Edit text: ${locationFocused.name}`);
+    // locationAPI.edit(text);
+  }
+
+  function deleteLocation() {
+    locationAPI.delete(locationFocused);
+    console.log(locationValue);
+  }
+
+  function focusInput(e) {
+    console.log("Focus");
+    // setInputText(locationFocused.name);
+    setInputText("Focus");
+    console.log(locationValue);
+    console.log(locationFocused);
+  }
+
+  function blurInput(e) {
+    console.log("Blur");
+    // setInputText(locationValue)
+    setInputText("Blur");
+    console.log(locationValue);
+    console.log(locationFocused);
+  }
+
+  function changeInput(e) {
+    console.log("Change");
+    setInputText(e.target.value);
+  }
+
   return (
     <div id={ id }>
-      <h2>Locations</h2>
+      <h3>Locations</h3>
       <ul>
         {
           locations.map(location => 
@@ -81,11 +121,13 @@ function LocationModule({ id }) {
       <FormComponent 
         id="location-form" 
         frmLabel="Location" 
-        valuesAll={ locations } 
-        valueFocused={ locationFocused }
-        valueFocusedTxt={ locationFocused.name }
-        valueTxt={ locationValue } 
-        api={ locationAPI }
+        valueTxt={ inputText } 
+        handlerAdd={ addLocation } 
+        handlerEdit={ editLocation } 
+        handlerDelete={ deleteLocation } 
+        handlerBlur={ blurInput } 
+        handlerFocus={ focusInput } 
+        handlerChange={ changeInput }
       />
     </div>
   );
