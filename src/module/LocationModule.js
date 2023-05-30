@@ -96,7 +96,6 @@ function LocationModule({ id }) {
 
   function deleteLocation() {
     locationAPI.delete(locationFocused);
-    console.log(locationValue);
   }
 
   function openEditDialog() {
