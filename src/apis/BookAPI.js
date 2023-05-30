@@ -51,6 +51,37 @@ export default class BookAPI {
     }
   }
 
+  async edit(book, formData, callback) {
+    console.log(`Updating book location to ${ formData.get("location") }`);
+
+    try {
+
+      const response = await fetch(
+        `http://localhost:3001/book/${ book.id }`, 
+        { 
+          method: "POST", 
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }, 
+          body: formData 
+        });
+
+      const data = await response.text();
+      if (data == "Success.") {
+        
+        if (callback) {
+          book.location = formData.get("location");
+          callback(book);
+        }
+
+        console.log(data);
+      }
+      
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async delete(book, callback) {
     try {
 
