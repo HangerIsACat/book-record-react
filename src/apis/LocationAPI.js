@@ -16,8 +16,39 @@ export default class LocationAPI {
     }
   };
 
-  add(locParent) {
-    console.log(`Add location to ${locParent.name} : ${locParent.id}`);
+  async add(formData, callback) {
+    console.log(`Adding location named ${ formData.get("name") } to parent ID ${ formData.get("parentID") }`);
+
+    try {
+
+      const response = await fetch(
+        "http://localhost:3001/location", 
+        { 
+          method: "POST", 
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }, 
+          body: formData 
+        });
+
+      const data = await response.text();
+      if (data == "Success.") {
+        
+        if (callback) {
+          let newLocation = {
+            id: null, 
+            name: formData.get("name"), 
+            parentID: formData.get("parentID")
+          };
+          callback(newLocation);
+        }
+
+        console.log(data);
+      }
+      
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async edit(location, formData, callback) {
