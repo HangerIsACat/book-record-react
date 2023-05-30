@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 
 import BookAPI from "./../apis/BookAPI.js";
 
-import FormDialogComponent from "./../components/FormDialogComponent.js";
 import ListComponent from "./../components/ListComponent.js";
+import FormDialogComponent from "./../components/FormDialogComponent.js";
+import LocationSelectDialogComponent from "./../components/LocationSelectDialogComponent.js";
 
 import Button from "@mui/material/Button";
 import Add from "@mui/icons-material/Add";
@@ -16,12 +17,16 @@ function BookModule({ id }) {
   const [books, setBooks] = useState([]);
 
   const [items, setItems] = useState([]);
-  const [itemSelected, setItemSelected] = useState({});
+  const [bookSelected, setBookSelected] = useState({});
   const [locCurrentTxt, setLocCurrentTxt] = useState("");
 
   const [isOpenAdd, setIsOpenAdd] = useState(false);
   const [dialogFields, setDialogFields] = useState([]);
   const [inputTextTitleAdd, setInputTitleNameAdd] = useState("");
+
+  const [isOpenSelect, setIsOpenSelect] = useState(false);
+  const [locationValues, setLocationValues] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState("");
 
   useEffect(() => {
     bookAPI.getAll((data) => {
@@ -31,11 +36,11 @@ function BookModule({ id }) {
   });
 
   function loadModule(books) {
-    const location = document.getElementById("frm-text").value;
-    const locationArr = location.split(" > ");
+    const locString = document.getElementById("frm-text").value;
+    const locationArr = locString.split(" > ");
     const locCurrent = locationArr[locationArr.length - 1];
 
-    setLocCurrentTxt(location.replaceAll(" > ", "/",));
+    setLocCurrentTxt(locString.replaceAll(" > ", "/",));
 
     let items = books.map(book => {
         return {
@@ -60,6 +65,18 @@ function BookModule({ id }) {
 
     });
 
+
+    const locationValues = [];
+    for (let i = 0; i < locationArr.length; i++) {
+
+      locationValues.push({
+        label: locationArr[i], 
+        value: locationArr.slice(0, i + 1).join("/")
+      });
+
+    }
+    setLocationValues(locationValues);
+
     setItems(items);
     setDialogFields([{
       label: "Title", 
@@ -78,12 +95,21 @@ function BookModule({ id }) {
   }
 
   function deleteBook() {
-    const book = books.find(book => book.id = itemSelected.id);
+    const book = books.find(book => book.id = bookSelected.id);
     bookAPI.delete(book);
   }
 
+  function moveBook() {
+    const formData = new URLSearchParams();
+    formData.append("location", selectedLocation);
+
+    bookAPI.edit(bookSelected, formData);
+
+    setIsOpenSelect(false);
+  }
+
   function focusItem(item) {
-    setItemSelected(item);
+    setBookSelected(item);
   }
 
   function openAddDialog() {
@@ -95,8 +121,20 @@ function BookModule({ id }) {
   }
 
   function changeTextOpenDialog(e) {
-    console.log(e.target.value);
     setInputTitleNameAdd(e.target.value);
+  }
+
+  function openSelectDialog() {
+    setIsOpenSelect(true);
+  }
+
+  function closeSelectDialog() {
+    setIsOpenSelect(false);
+  }
+
+  function changeSelectDialog(e) {
+    console.log(e.target.value);
+    setSelectedLocation(e.target.value);
   }
 
   return (
@@ -105,7 +143,7 @@ function BookModule({ id }) {
         <Add />
         <h4>Add new book</h4>
       </Button>
-    <ListComponent id="book-list" items={ items } handlerDelete={ deleteBook } handlerFocus={ focusItem } />   
+    <ListComponent id="book-list" items={ items } handlerDelete={ deleteBook } handlerMove={ openSelectDialog } handlerFocus={ focusItem } />   
 
     <FormDialogComponent 
         id="book-dialog-add" 
@@ -115,7 +153,18 @@ function BookModule({ id }) {
         handlerOk={ addBook }
         handlerCancel={ closeAddDialog } 
         handlerClose={ closeAddDialog }
-        handlerChange={ changeTextOpenDialog } />   
+        handlerChange={ changeTextOpenDialog } /> 
+
+    <LocationSelectDialogComponent 
+      id="book-locSelector" 
+      frmLabel="Move Book" 
+      isOpen={ isOpenSelect } 
+      selectValue={ selectedLocation } 
+      locValues={ locationValues }
+      handlerOk={ moveBook } 
+      handlerCancel={ closeSelectDialog }
+      handlerClose={ closeSelectDialog } 
+      handlerChange={ changeSelectDialog }/>
     </div>
   );
 
