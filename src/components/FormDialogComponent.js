@@ -9,12 +9,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 
-function LocationDialogComponent({ 
+function FormDialogComponent({ 
   id, 
   frmLabel, 
   isOpen, 
-  frmFieldLabel, 
-  frmFieldValue, 
+  fields, 
   handlerOk, 
   handlerCancel, 
   handlerClose, 
@@ -25,11 +24,16 @@ function LocationDialogComponent({
     <Dialog id={ id } open={ isOpen } onClose={ handlerClose }>
       <DialogTitle>{ frmLabel }</DialogTitle>
       <DialogContent>
-        <TextField 
-          id={ `${ id }-txt-${ frmFieldLabel.toLowerCase().replaceAll(" ", "") }` }
-          label={ frmFieldLabel }
-          value={ frmFieldValue } 
-          onChange={ handlerChange } />
+        {
+          fields.map(field => 
+            <TextField 
+              key={ `${ id }-txt-${ field.label.toLowerCase().replaceAll(" ", "") }` } 
+              id={ `${ id }-txt-${ field.label.toLowerCase().replaceAll(" ", "") }` }
+              label={ field.label }
+              value={ field.value } 
+              onChange={ handlerChange } />
+          )
+        }
       </DialogContent>
       <DialogActions>
         <Button id="frm-btn-ok" onClick={ handlerOk } >Ok</Button>
@@ -40,4 +44,4 @@ function LocationDialogComponent({
 
 }
 
-export default LocationDialogComponent;
+export default FormDialogComponent;

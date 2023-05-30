@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import LocationAPI from "./../apis/LocationAPI.js";
 
 import FormComponent from "./../components/FormComponent.js";
-import LocationDialogComponent from "../components/LocationDialogComponent.js"
+import FormDialogComponent from "../components/FormDialogComponent.js"
 
 function LocationModule({ id }) {
 
@@ -21,6 +21,8 @@ function LocationModule({ id }) {
 
   const [isOpenAdd, setIsOpenAdd] = useState(false);
   const [inputTextNameAdd, setInputTextNameAdd] = useState("");
+
+  const [dialogFields, setDialogFields] = useState([]);
 
   useEffect(() => {
     locationAPI.getAll((data) => {
@@ -71,6 +73,11 @@ function LocationModule({ id }) {
       let locNameLast = locNames[locNames.length - 1];
       let locValue = locations.find(location => location.name == locNameLast);
       setLocationFocused(locValue);
+
+      setDialogFields([{
+        label: "Name", 
+        value: inputTextNameEdit
+      }]);
     }
   }
 
@@ -134,23 +141,21 @@ function LocationModule({ id }) {
         handlerDelete={ deleteLocation } 
       />
 
-      <LocationDialogComponent 
+      <FormDialogComponent 
         id="location-dialog-edit" 
         frmLabel="Edit Location" 
         isOpen={ isOpenEdit } 
-        frmFieldLabel="Name" 
-        frmFieldValue={ inputTextNameEdit }
+        fields={ dialogFields } 
         handlerOk={ editLocation }
         handlerCancel={ closeEditDialog } 
         handlerClose={ closeEditDialog }
         handlerChange={ changeTextEditDialog } />
 
-      <LocationDialogComponent 
+      <FormDialogComponent 
         id="location-dialog-add" 
         frmLabel="Add Location" 
         isOpen={ isOpenAdd } 
-        frmFieldLabel="Name" 
-        frmFieldValue={ inputTextNameAdd }
+        fields={ dialogFields } 
         handlerOk={ addLocation }
         handlerCancel={ closeAddDialog } 
         handlerClose={ closeAddDialog }
