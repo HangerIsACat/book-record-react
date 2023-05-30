@@ -19,14 +19,15 @@ function LocationModule({ id }) {
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [inputTextNameEdit, setInputTextNameEdit] = useState("");
 
-  //*
+  const [isOpenAdd, setIsOpenAdd] = useState(false);
+  const [inputTextNameAdd, setInputTextNameAdd] = useState("");
+
   useEffect(() => {
     locationAPI.getAll((data) => {
       setLocations(Array.from(data));
       loadModule(data);
     });
   });
-  //*/
 
   function createTree(locations) {
     let locationTree = [];
@@ -74,8 +75,13 @@ function LocationModule({ id }) {
   }
 
   function addLocation() {
-    console.log(`Add text: ${locationFocused.name}`);
-    // locationAPI.add(text);
+    const formData = new URLSearchParams();
+    formData.append("name", inputTextNameAdd);
+    formData.append("parentID", locationFocused ? locationFocused.id : null);
+
+    locationAPI.add(formData);
+
+    setIsOpenAdd(false);
   }
 
   function editLocation() {
@@ -103,8 +109,19 @@ function LocationModule({ id }) {
   }
 
   function changeTextEditDialog(e) {
-    console.log(e.target.value);
     setInputTextNameEdit(e.target.value);
+  }
+
+  function openAddDialog() {
+    setIsOpenAdd(true);
+  }
+
+  function closeAddDialog() {
+    setIsOpenAdd(false);
+  }
+
+  function changeTextAddDialog(e) {
+    setInputTextNameAdd(e.target.value);
   }
 
   return (
@@ -125,13 +142,13 @@ function LocationModule({ id }) {
         id="location-form" 
         frmLabel="Location" 
         valueTxt={ inputText } 
-        handlerAdd={ addLocation } 
+        handlerAdd={ openAddDialog } 
         handlerEdit={ openEditDialog } 
         handlerDelete={ deleteLocation } 
       />
 
       <LocationDialogComponent 
-        id="location-dialog" 
+        id="location-dialog-edit" 
         frmLabel="Edit Location" 
         isOpen={ isOpenEdit } 
         frmFieldLabel="Name" 
@@ -140,6 +157,17 @@ function LocationModule({ id }) {
         handlerCancel={ closeEditDialog } 
         handlerClose={ closeEditDialog }
         handlerChange={ changeTextEditDialog } />
+
+      <LocationDialogComponent 
+        id="location-dialog-add" 
+        frmLabel="Add Location" 
+        isOpen={ isOpenAdd } 
+        frmFieldLabel="Name" 
+        frmFieldValue={ inputTextNameAdd }
+        handlerOk={ addLocation }
+        handlerCancel={ closeAddDialog } 
+        handlerClose={ closeAddDialog }
+        handlerChange={ changeTextAddDialog } />
     </div>
   );
 
