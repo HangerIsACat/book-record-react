@@ -1,7 +1,7 @@
-# Book Record App (Currently, a location app)
-Book record web application using ReactJS. But since it's not yet complete, it features a text box for location management instead.
+# Book Record App 
+Book record web application using ReactJS. It features a text box for location management and a list for book record management.
 
-![Screenshot from 2023-05-30 20-40-25](https://github.com/HangerIsACat/book-record-react/assets/126554668/e308264b-0b28-4059-91bb-751411d85e25)
+![Screenshot from 2023-05-31 00-56-35](https://github.com/HangerIsACat/book-record-react/assets/126554668/80bd0dfa-c535-42c3-9572-01eef5f00c2d)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). Also, it is built for calling the endpoints in this project: [Book Record REST APIs](https://github.com/HangerIsACat/book-record-node).
 
