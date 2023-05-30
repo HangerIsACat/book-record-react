@@ -25,11 +25,30 @@ function BookModule({ id }) {
   });
 
   function loadModule(books) {
+    const locationArr = document.getElementById("frm-text").value.split(" > ");
+    const locCurrent = locationArr[locationArr.length - 1];
+
     let items = books.map(book => {
-      return {
-        id: book.id,  
-        name: book.title
-      };
+        return {
+          id: book.id,  
+          name: book.title, 
+          location: book.location
+        };
+    });
+
+    items = items.filter(item => {
+
+      if (item.location.includes(`/${locCurrent}`) 
+        && !item.location.includes(`/${locCurrent}/`)) {
+
+        return item;
+
+      } else if (!item.location.includes("/") 
+        && item.location.includes(locCurrent)) {
+          
+        return item;
+      }
+
     });
 
     setItems(items);
