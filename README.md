@@ -5,6 +5,8 @@ Book record web application using ReactJS. But since it's not yet complete, it f
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). Also, it is built for calling the endpoints in this project: [Book Record REST APIs](https://github.com/HangerIsACat/book-record-node).
 
+To setup the pre-requisites, run `npm install` inside the project root directory.
+
 ---
 
 ### Pre-requisites
