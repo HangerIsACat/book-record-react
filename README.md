@@ -1,8 +1,19 @@
-# Getting Started with Create React App
+# Book Record App (Currently, a location app)
+Book record web application using ReactJS. But since it's not yet complete, it features a text box for location management instead.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Screenshot from 2023-05-30 20-40-25](https://github.com/HangerIsACat/book-record-react/assets/126554668/e308264b-0b28-4059-91bb-751411d85e25)
 
-## Available Scripts
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). Also, it is built for calling the endpoints in this project: [Book Record REST APIs](https://github.com/HangerIsACat/book-record-node).
+
+---
+
+### Pre-requisites
+* See [Book Record REST APIs](https://github.com/HangerIsACat/book-record-node). 
+* Google Chrome version 113.0.x.x (no test yet on other versions)
+
+---
+
+### Available Scripts (as described by create-react-app)
 
 In the project directory, you can run:
 
@@ -16,7 +27,7 @@ You may also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
+Launches the test runner in the interactive watch mode (not implemented though).\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
