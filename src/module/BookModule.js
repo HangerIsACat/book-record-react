@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 
 import BookAPI from "./../apis/BookAPI.js";
 
+import FormDialogComponent from "./../components/FormDialogComponent.js";
 import ListComponent from "./../components/ListComponent.js";
 
 import Button from "@mui/material/Button";
@@ -16,6 +17,11 @@ function BookModule({ id }) {
 
   const [items, setItems] = useState([]);
   const [itemSelected, setItemSelected] = useState({});
+  const [locCurrentTxt, setLocCurrentTxt] = useState("");
+
+  const [isOpenAdd, setIsOpenAdd] = useState(false);
+  const [dialogFields, setDialogFields] = useState([]);
+  const [inputTextTitleAdd, setInputTitleNameAdd] = useState("");
 
   useEffect(() => {
     bookAPI.getAll((data) => {
@@ -25,8 +31,11 @@ function BookModule({ id }) {
   });
 
   function loadModule(books) {
-    const locationArr = document.getElementById("frm-text").value.split(" > ");
+    const location = document.getElementById("frm-text").value;
+    const locationArr = location.split(" > ");
     const locCurrent = locationArr[locationArr.length - 1];
+
+    setLocCurrentTxt(location.replaceAll(" > ", "/",));
 
     let items = books.map(book => {
         return {
@@ -52,6 +61,20 @@ function BookModule({ id }) {
     });
 
     setItems(items);
+    setDialogFields([{
+      label: "Title", 
+      value: inputTextTitleAdd
+    }]);
+  }
+
+  function addBook() {
+    const formData = new URLSearchParams();
+    formData.append("title", inputTextTitleAdd);
+    formData.append("location", locCurrentTxt);
+
+    bookAPI.add(formData);
+
+    setIsOpenAdd(false);
   }
 
   function deleteBook() {
@@ -63,13 +86,36 @@ function BookModule({ id }) {
     setItemSelected(item);
   }
 
+  function openAddDialog() {
+    setIsOpenAdd(true);
+  }
+
+  function closeAddDialog() {
+    setIsOpenAdd(false);
+  }
+
+  function changeTextOpenDialog(e) {
+    console.log(e.target.value);
+    setInputTitleNameAdd(e.target.value);
+  }
+
   return (
     <div id={ id }>
-      <Button>
+      <Button onClick={ openAddDialog }>
         <Add />
         <h4>Add new book</h4>
       </Button>
-    <ListComponent id="book-list" items={ items } handlerDelete={ deleteBook } handlerFocus={ focusItem } />      
+    <ListComponent id="book-list" items={ items } handlerDelete={ deleteBook } handlerFocus={ focusItem } />   
+
+    <FormDialogComponent 
+        id="book-dialog-add" 
+        frmLabel="Add Book" 
+        isOpen={ isOpenAdd } 
+        fields={ dialogFields } 
+        handlerOk={ addBook }
+        handlerCancel={ closeAddDialog } 
+        handlerClose={ closeAddDialog }
+        handlerChange={ changeTextOpenDialog } />   
     </div>
   );
 
